@@ -22,6 +22,8 @@ public class Main {
 		// TODO Auto-generated method stub
 		String username = args[0];
 		String password = args[1];
+		String courseid = args[2];
+		int groupid = Integer.parseInt(args[3]);
 		
 		WebClient webClient = new WebClient();
 		WebClientOptions webClientOptions = webClient.getOptions();
@@ -45,7 +47,7 @@ public class Main {
 			HtmlDivision paging;
 			do {
 				System.out.println("PageNumber = " + pageNum);
-				page = webClient.getPage("http://ispace.uic.edu.hk/enrol/users.php?id=6&role=5&page="+pageNum+"&perpage=100&sort=lastname&dir=ASC");
+				page = webClient.getPage("http://ispace.uic.edu.hk/enrol/users.php?id="+courseid+"&role=5&page="+pageNum+"&perpage=100&sort=lastname&dir=ASC");
 				
 				List<HtmlTableRow> hr = (List<HtmlTableRow>) page.getByXPath("//tr[@class='userinforow r1'] | //tr[@class='userinforow r0'] | //tr[@class='userinforow r1 lastrow'] | //tr[@class='userinforow r0 lastrow']");
 				List<HtmlDivision> groupingDiv = (List<HtmlDivision>) page.getByXPath("//div[@class='groups']");
@@ -67,10 +69,10 @@ public class Main {
 							groupNum = groupDiv.get(i).asText().split("[(]")[2];
 							groupNum = groupNum.split("[)]")[0];
 							
-							addGroup = webClient.getPage("http://ispace.uic.edu.hk/enrol/users.php?id=6&page=0&perpage=100&sort=lastname&dir=ASC&action=addmember&user=" + id);
+							addGroup = webClient.getPage("http://ispace.uic.edu.hk/enrol/users.php?id="+courseid+"&page=0&perpage=100&sort=lastname&dir=ASC&action=addmember&user=" + id);
 							form = addGroup.getFormByName("");
 							groupSelect = form.getSelectByName("groupid");
-							int tmpi = Integer.parseInt(groupNum)+92;
+							int tmpi = Integer.parseInt(groupNum)+groupid-1;
 							groupSelect.setSelectedAttribute(tmpi+"", true);
 							button = form.getInputByName("submitbutton");
 							button.click();
